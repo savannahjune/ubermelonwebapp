@@ -33,7 +33,24 @@ def shopping_cart():
     """TODO: Display the contents of the shopping cart. The shopping cart is a
     list held in the session that contains all the melons to be added. Check
     accompanying screenshots for details."""
-    return render_template("cart.html")
+
+
+    melon_dict = {}
+    
+    for key in session['cart']:
+
+        melon = model.get_melon_by_id(key)
+        melon_dict[key] = {"name": melon.common_name, "quantity": session['cart'][key], "price": melon.price }
+
+    print melon_dict
+
+    total = 0
+
+    for item in melon_dict:
+        total += melon_dict[item]["price"] * melon_dict[item]["quantity"]
+
+
+    return render_template("cart.html", melon_dict=melon_dict, cart_total="%0.2f") % total 
 
 @app.route("/add_to_cart/<int:id>")
 def add_to_cart(id):
@@ -44,8 +61,23 @@ def add_to_cart(id):
     shopping cart page, while displaying the message
     "Successfully added to cart" """
 
-    return "Oops! This needs to be implemented!"
+    temp_id=str(id)
 
+    if 'cart' in session:
+
+        if temp_id in session['cart']:
+            session['cart'][temp_id] += 1
+
+        else:
+            session['cart'][temp_id] = 1
+    else:
+        print "initializing cart in session"
+        session['cart'] = {temp_id: 1}
+    
+    display_melon = model.get_melon_by_id(id)
+
+    flash("You successfully added one " + display_melon.common_name +" to your cart!")
+    return redirect('/cart')
 
 @app.route("/login", methods=["GET"])
 def show_login():
@@ -57,7 +89,6 @@ def process_login():
     """TODO: Receive the user's login credentials located in the 'request.form'
     dictionary, look up the user, and store them in the session."""
     return "Oops! This needs to be implemented"
-
 
 @app.route("/checkout")
 def checkout():
