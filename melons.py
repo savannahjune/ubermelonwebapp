@@ -85,7 +85,18 @@ def show_login():
 def process_login():
     """TODO: Receive the user's login credentials located in the 'request.form'
     dictionary, look up the user, and store them in the session."""
-    return "Oops! This needs to be implemented"
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    # verify_user = model.get_customer_by_email(email)
+
+    # make session user dictionary
+
+    if 'email' in session:
+        flash("You are successfully logged in!")
+    else:
+        flash("Please sign up for an ubermelon account ya scrub")
+
 
 @app.route("/checkout")
 def checkout():
