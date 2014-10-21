@@ -3,6 +3,8 @@
 
 <table class="table table-striped">
     <tr><th>Melon Name</th><th>Quantity</th><th>Price</th><th>Total</th></tr>
+
+
     {% for melon in melon_dict %}
 
     <tr><td>{{ melon_dict[melon]["name"] }} </td><td> {{ melon_dict[melon]["quantity"] }} </td><td> {% set price = melon_dict[melon]["price"] %} ${{"%0.2f" | format(price)}} </td> <td> {% set total = melon_dict[melon]["quantity"] * melon_dict[melon]["price"] %} ${{"%0.2f" | format(total)}} </td>

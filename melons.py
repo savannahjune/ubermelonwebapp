@@ -36,21 +36,15 @@ def shopping_cart():
 
 
     melon_dict = {}
+    total = 0
     
     for key in session['cart']:
 
         melon = model.get_melon_by_id(key)
         melon_dict[key] = {"name": melon.common_name, "quantity": session['cart'][key], "price": melon.price }
+        total += melon_dict[key]["price"] * melon_dict[key]["quantity"]
 
-    print melon_dict
-
-    total = 0
-
-    for item in melon_dict:
-        total += melon_dict[item]["price"] * melon_dict[item]["quantity"]
-
-
-    return render_template("cart.html", melon_dict=melon_dict, cart_total="%0.2f") % total 
+    return render_template("cart.html", melon_dict=melon_dict, cart_total="%0.2f" % total) 
 
 @app.route("/add_to_cart/<int:id>")
 def add_to_cart(id):
@@ -65,11 +59,13 @@ def add_to_cart(id):
 
     if 'cart' in session:
 
-        if temp_id in session['cart']:
-            session['cart'][temp_id] += 1
+        # if temp_id in session['cart']:
+        #     session['cart'][temp_id] += 1
 
-        else:
-            session['cart'][temp_id] = 1
+        # else:
+        #     session['cart'][temp_id] = 1
+        session['cart'][temp_id] = session['cart'].get(temp_id, 0) + 1
+
     else:
         print "initializing cart in session"
         session['cart'] = {temp_id: 1}
@@ -78,6 +74,7 @@ def add_to_cart(id):
 
     flash("You successfully added one " + display_melon.common_name +" to your cart!")
     return redirect('/cart')
+"""We did not do anything to deal with case in which user checks cart before adding item"""    
 
 @app.route("/login", methods=["GET"])
 def show_login():
